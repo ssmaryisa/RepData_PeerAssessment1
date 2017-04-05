@@ -1,18 +1,37 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
 output: 
-  html_document:
-    keep_md: true
+html_document:
+keep_md: true
 ---
 
+**This report contains the assignment 1 for the Cousera Reproducible Research 
 
-## Loading and preprocessing the data
+### Loading and preprocessing the data
+```{r}
+activity = read.csv("activity.csv", header = TRUE, sep = ",")
+activity$date = as.Date(activity$date)
+```
 
+### What is mean total number of steps taken per day?
 
+Calculate the total number of steps taken per day
+```{r}
+activity_new = aggregate(steps~date, data = activity, sum)
+```
 
-## What is mean total number of steps taken per day?
+Make a histogram of the total number of steps taken each day
+```{r}
+library(ggplot2)
+ggplot(activity_new, aes(x=date, y = steps)) + geom_bar(stat="identity")
+```
 
+Calculate and report the mean and median of the total number of steps taken per day
+```{r}
+mean(activity_new$steps)
+median(activity_new$steps)
 
+```
 
 ## What is the average daily activity pattern?
 
