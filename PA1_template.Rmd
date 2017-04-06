@@ -14,31 +14,69 @@ activity$date = as.Date(activity$date)
 ```
 
 ### What is mean total number of steps taken per day?
-
 Calculate the total number of steps taken per day
 ```{r}
-activity_new = aggregate(steps~date, data = activity, sum)
+activity_steps = aggregate(steps~date, data = activity, sum)
 ```
 
 Make a histogram of the total number of steps taken each day
 ```{r}
 library(ggplot2)
-ggplot(activity_new, aes(x=date, y = steps)) + geom_bar(stat="identity")
+ggplot(activity_steps, aes(x=date, y = steps)) + geom_bar(stat="identity")
 ```
 
 Calculate and report the mean and median of the total number of steps taken per day
 ```{r}
-mean(activity_new$steps)
-median(activity_new$steps)
+mean(activity_steps$steps)
+median(activity_steps$steps)
 
 ```
 
-## What is the average daily activity pattern?
+### What is the average daily activity pattern?
 
+Now I made a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
+```{r}
+activity_interval = aggregate(steps~interval, data = activity, mean)
+plot(activity_interval$interval, activity_interval$steps, type = "l")
+```
 
-## Imputing missing values
+Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
+```{r}
+activity_interval[activity_interval$steps == max(activity_interval$steps),]$interval
+```
 
+### Imputing missing values
 
-## Are there differences in activity patterns between weekdays and weekends?
+Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+```{r}
+nrow(activity[is.na(activity)==TRUE,])
+```
+
+I invented a strategy for filling in all of the missing values in the dataset. I filled the missing data with the mean of the steps and I created a new dataset that is equal to the original dataset but with the missing data filled in.
+```{r}
+activity_new = activity
+activity_new[is.na(activity_new)] = mean(activity_new$steps, na.rm = TRUE)
+```
+
+Make a histogram of the total number of steps taken each day 
+```{r}
+activity_new = aggregate(steps~date, data = activity_new, sum)
+ggplot(activity_new, aes(x=date, y = steps)) + geom_bar(stat="identity")
+
+```
+
+I calculated the mean and median total number of steps taken per day but these values now are almost the same after replace missing values.
+
+Thete isn't impact of imputing missing data on the estimates of the total daily number of steps.
+
+```{r}
+mean(activity_new$steps)
+median(activity_new$steps)
+```
+
+### Are there differences in activity patterns between weekdays and weekends?
+```{r}
+
+```
