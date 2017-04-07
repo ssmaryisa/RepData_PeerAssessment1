@@ -14,18 +14,18 @@ activity$date = as.Date(activity$date)
 ```
 
 ### What is mean total number of steps taken per day?
-Calculate the total number of steps taken per day
+I calculated the total number of steps taken per day
 ```{r}
 activity_steps = aggregate(steps~date, data = activity, sum)
 ```
 
-Make a histogram of the total number of steps taken each day
+I made a histogram of the total number of steps taken each day
 ```{r}
 library(ggplot2)
 ggplot(activity_steps, aes(x=date, y = steps)) + geom_bar(stat="identity")
 ```
 
-Calculate and report the mean and median of the total number of steps taken per day
+I calculated and reported the mean and median of the total number of steps taken per day
 ```{r}
 mean(activity_steps$steps)
 median(activity_steps$steps)
@@ -41,7 +41,7 @@ activity_interval = aggregate(steps~interval, data = activity, mean)
 plot(activity_interval$interval, activity_interval$steps, type = "l")
 ```
 
-Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+I calculated the 5-minute interval, on average across all the days in the dataset that contains the maximum number of steps.
 
 ```{r}
 activity_interval[activity_interval$steps == max(activity_interval$steps),]$interval
@@ -49,7 +49,7 @@ activity_interval[activity_interval$steps == max(activity_interval$steps),]$inte
 
 ### Imputing missing values
 
-Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+I calculated and reported the total number of missing values in the dataset.
 ```{r}
 nrow(activity[is.na(activity)==TRUE,])
 ```
@@ -62,21 +62,36 @@ activity_new[is.na(activity_new)] = mean(activity_new$steps, na.rm = TRUE)
 
 Make a histogram of the total number of steps taken each day 
 ```{r}
-activity_new = aggregate(steps~date, data = activity_new, sum)
-ggplot(activity_new, aes(x=date, y = steps)) + geom_bar(stat="identity")
+activity_new_hist = aggregate(steps~date, data = activity_new, sum)
+ggplot(activity_new_hist, aes(x=date, y = steps)) + geom_bar(stat="identity")
 
 ```
 
 I calculated the mean and median total number of steps taken per day but these values now are almost the same after replace missing values.
 
-Thete isn't impact of imputing missing data on the estimates of the total daily number of steps.
+There isn't impact of imputing missing data on the estimates of the total daily number of steps.
 
 ```{r}
-mean(activity_new$steps)
-median(activity_new$steps)
+mean(activity_new_hist$steps)
+median(activity_new_hist$steps)
 ```
 
 ### Are there differences in activity patterns between weekdays and weekends?
+
+I created a new factor variable in the dataset called week with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
+
+I made a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+
 ```{r}
+
+activity_new$week = ifelse(weekdays(as.Date(activity_new$date)) %in% c("Saturday","Sunday"), "weekend", "weekday")
+
+activity_new = aggregate(steps~week+interval, data = activity_new, mean)
+activity_weekday = activity_new[activity_new$week == "weekday",]
+activity_weekend = activity_new[activity_new$week == "weekend",]
+par(mfrow = c(2,1))
+plot( activity_weekend$steps~ activity_weekend$interval, type = "l")
+plot( activity_weekday$steps~ activity_weekday$interval, type = "l")
+qplot(steps,interval, data = activity_new, geom = "line", facets =  week~.)
 
 ```
