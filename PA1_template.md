@@ -66,7 +66,10 @@ Now I made a time series plot of the 5-minute interval and the average number of
 
 ```r
 activity_interval = aggregate(steps~interval, data = activity, mean)
-plot(activity_interval$interval, activity_interval$steps, type = "l", xlab = "Interval", ylab = "Average number of steps")
+plot(activity_interval$interval, activity_interval$steps, 
+     type = "l", 
+     xlab = "Interval", 
+     ylab = "Average number of steps")
 ```
 
 ![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
@@ -152,14 +155,25 @@ I made a panel plot containing a time series plot of the 5-minute interval (x-ax
 
 
 ```r
-activity_new$week = ifelse(weekdays(as.Date(activity_new$date)) %in% c("Saturday","Sunday"), "weekend", "weekday")
+activity_new$week = ifelse(weekdays(as.Date(activity_new$date)) 
+                           %in% c("Saturday","Sunday"), "weekend", "weekday")
 
 activity_new = aggregate(steps~week+interval, data = activity_new, mean)
 activity_weekday = activity_new[activity_new$week == "weekday",]
 activity_weekend = activity_new[activity_new$week == "weekend",]
 par(mfrow = c(2,1), mar = c(4,4,2,1))
-plot( activity_weekday$steps~ activity_weekday$interval, type = "l", xlab = "Interval", ylab = "Average number of steps", main = "Weekday", ylim = c(0,max(activity_new$steps)))
-plot( activity_weekend$steps~ activity_weekend$interval, type = "l", xlab = "Interval", ylab = "Average number of steps", main = "Weekend", ylim = c(0,max(activity_new$steps)))
+plot( activity_weekday$steps~ activity_weekday$interval, 
+      type = "l", 
+      xlab = "Interval", 
+      ylab = "Average number of steps", 
+      main = "Weekday", 
+      ylim = c(0,max(activity_new$steps)))
+plot( activity_weekend$steps~ activity_weekend$interval, 
+      type = "l", 
+      xlab = "Interval", 
+      ylab = "Average number of steps",
+      main = "Weekend", 
+      ylim = c(0,max(activity_new$steps)))
 ```
 
 ![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png)
